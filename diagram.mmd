@@ -1,2 +1,22 @@
-<!-- Save your AI-generated Mermaid flowchart source here (Tinker 3B, Part 4). -->
-<!-- Replace this comment with a fenced ```mermaid``` code block: input -> process/score -> output. -->
+flowchart TD
+    A[/"data/study_spots.csv"/] --> B["load_study_spots()<br/>csv.DictReader<br/>distance_miles → float, seats_available → int"]
+    P[/"Student profile<br/>max_noise, max_distance, min_seats"/] --> C
+    B --> C["rank_study_spots(profile, spots, k)<br/>for each spot..."]
+    C --> D["score_study_spot(profile, spot)"]
+    D --> E{"Noise ≤ max_noise?"}
+    E -- yes --> E1["+2.0, 'quiet enough'"]
+    E -- no --> E2["-2.0, 'too noisy'"]
+    E1 --> F{"Distance ≤ max_distance?"}
+    E2 --> F
+    F -- yes --> F1["+2.0, 'close enough'"]
+    F -- no --> F2["-1.0, 'too far'"]
+    F1 --> G{"Seats ≥ min_seats?"}
+    F2 --> G
+    G -- yes --> G1["+1.0, 'enough seats'"]
+    G -- no --> G2["-1.0, 'not enough seats'"]
+    G1 --> H["Return (score, reasons)"]
+    G2 --> H
+    H --> I["Collect (spot, score, reasons)<br/>for every spot"]
+    I --> J["sorted(..., reverse=True)[:k]<br/>keep top k by score"]
+    J --> K["format_results(ranked)<br/>'1. Name -- Score: 5.0 -- Because: ...'"]
+    K --> L[/"Printed / displayed results"/]
